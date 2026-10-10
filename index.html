@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pendaftaran Ziarah Pamijahan</title>
+<style>
+:root{color-scheme:light;--bg:#ffffff;--tx:#1c1c1c;--mut:#8a8a8a;--ac:#1f6b4a;--bd:#ececec;--er:#c0392b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:520px;margin:0 auto;padding:36px 20px 56px}
+h1{font:500 28px/1.25 Georgia,"Times New Roman",serif;letter-spacing:.2px;margin:0 0 6px}
+h1::after{content:"";display:block;width:36px;height:2px;background:var(--ac);margin-top:12px}
+.sub{color:var(--mut);margin:14px 0 22px;font-size:15px}
+.card{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:24px;margin-bottom:16px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(0,0,0,.05)}
+label{display:block;font-size:13px;font-weight:500;color:#555;letter-spacing:.3px;margin:16px 0 6px}
+label:first-child{margin-top:0}
+input,select,textarea{width:100%;padding:13px 14px;border:1px solid #e6e6e6;border-radius:12px;background:#fafafa;color:var(--tx);font:inherit;transition:border-color .15s,box-shadow .15s,background .15s}
+input:focus,select:focus,textarea:focus{outline:none;background:#fff;border-color:var(--ac);box-shadow:0 0 0 4px rgba(31,107,74,.10)}
+input[readonly]{color:var(--mut);background:#f5f5f5}
+button{margin-top:20px;width:100%;padding:14px;border:0;border-radius:12px;background:var(--ac);color:#fff;font:inherit;font-weight:500;letter-spacing:.3px;cursor:pointer;transition:opacity .15s,transform .05s}
+button:hover{opacity:.92}
+button:active{transform:scale(.99)}
+button.sec{background:#fff;color:var(--tx);border:1px solid #e2e2e2}
+button:disabled{opacity:.55;cursor:default}
+.msg{margin-top:14px;font-weight:500;font-size:15px}
+.row{display:flex;gap:10px}
+.wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-size:11px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.8px}
+td,th{text-align:left;padding:10px 8px;border-bottom:1px solid #f0f0f0;white-space:nowrap}
+a{color:var(--ac);text-decoration:none;font-weight:500}
+a:hover{text-decoration:underline}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <h1>Pendaftaran Ziarah Pamijahan</h1>
+  <p class="sub">Wisata religi Makam Pamijahan &amp; Pantai Sindangkerta</p>
+
+  <!-- HALAMAN PENDAFTARAN (publik) -->
+  <section id="vDaftar">
+    <div class="card">
+      <label for="nama">Nama peserta</label>
+      <input id="nama" autocomplete="name">
+      <label for="alamat">Alamat</label>
+      <textarea id="alamat" rows="2" autocomplete="street-address"></textarea>
+      <label for="hp">No. Handphone</label>
+      <input id="hp" type="tel" inputmode="tel" autocomplete="tel">
+      <label for="tgl">Tanggal daftar</label>
+      <input id="tgl" readonly>
+      <button id="kirim">Daftar</button>
+      <div class="msg" id="msgD"></div>
+    </div>
+    <p class="sub"><a href="#admin">Login admin</a></p>
+  </section>
+
+  <!-- LOGIN ADMIN -->
+  <section id="vLogin" hidden>
+    <div class="card">
+      <strong>Login Admin</strong>
+      <label for="em">Email</label>
+      <input id="em" type="email" autocomplete="username">
+      <label for="pw">Password</label>
+      <input id="pw" type="password" autocomplete="current-password">
+      <button id="masuk">Masuk</button>
+      <div class="msg" id="msgL"></div>
+    </div>
+    <p class="sub"><a href="#">Kembali ke pendaftaran</a></p>
+  </section>
+
+  <!-- DASHBOARD ADMIN -->
+  <section id="vAdmin" hidden>
+    <div class="card">
+      <strong id="total">Memuat…</strong>
+      <input id="cari" placeholder="Cari nama / alamat / no. HP" style="margin-top:10px">
+      <div class="row">
+        <button class="sec" id="csv">Unduh CSV</button>
+        <button class="sec" id="keluar">Keluar</button>
+      </div>
+      <div class="msg" id="msgA"></div>
+    </div>
+    <div class="card" id="tabCard" hidden>
+      <strong id="tNama"></strong>
+      <p class="sub" id="tSaldo" style="margin:4px 0 8px"></p>
+      <div style="height:8px;background:#f0f0f0;border-radius:99px;overflow:hidden;margin-bottom:6px"><div id="tFill" style="height:100%;width:0;background:var(--ac);transition:width .3s"></div></div>
+      <label for="tJenis">Jenis</label>
+      <select id="tJenis"><option value="setor">Setoran</option><option value="tarik">Penarikan</option></select>
+      <label for="tJml">Jumlah (Rp)</label>
+      <input id="tJml" type="number" inputmode="numeric" min="1">
+      <label for="tTgl">Tanggal</label>
+      <input id="tTgl" type="date">
+      <label for="tCat">Catatan (opsional)</label>
+      <input id="tCat">
+      <button id="tSimpan">Simpan</button>
+      <div class="msg" id="msgT"></div>
+      <div class="wrap" style="margin-top:14px"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th>Jumlah</th><th>Catatan</th><th></th></tr></thead><tbody id="tRows"></tbody></table></div>
+      <button class="sec" id="tTutup">Tutup</button>
+    </div>
+    <div class="card wrap">
+      <table><thead><tr><th>#</th><th>Nama</th><th>Alamat</th><th>No. HP</th><th>Tgl Daftar</th><th>Saldo</th><th></th></tr></thead>
+      <tbody id="rows"></tbody></table>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+<script>
+// ====== ISI DUA BARIS INI (dari Supabase > Project Settings > API) ======
+const SUPABASE_URL = "https://ajpmdyoichanpxtyfmyw.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_HZashMJi3bnz9CWTb5GcOQ_13jaVWhM";
+// ========================================================================
+const KAPASITAS = 59;
+const TARGET = 170000;
+const $ = id => document.getElementById(id);
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let data = [];
+
+const tglHariIni = new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+$('tgl').value = tglHariIni;
+const say = (el,t,err)=>{el.textContent=t;el.style.color=err?'var(--er)':'var(--ac)'};
+
+async function route(){
+  const admin = location.hash === '#admin';
+  const { data:{ session } } = await sb.auth.getSession();
+  $('vDaftar').hidden = admin;
+  $('vLogin').hidden = !(admin && !session);
+  $('vAdmin').hidden = !(admin && session);
+  if(admin && session) muat();
+}
+window.addEventListener('hashchange', route);
+
+$('kirim').onclick = async () => {
+  const nama=$('nama').value.trim(), alamat=$('alamat').value.trim(), hp=$('hp').value.trim();
+  if(!nama||!alamat||!hp) return say($('msgD'),'Nama, alamat, dan no. handphone wajib diisi.',true);
+  if(!/^[0-9+\-\s]{8,16}$/.test(hp)) return say($('msgD'),'Format no. handphone belum benar.',true);
+  $('kirim').disabled = true;
+  const { error } = await sb.from('peserta').insert({ nama, alamat, hp });
+  if(error){ $('kirim').disabled=false; return say($('msgD'),'Gagal mendaftar, coba lagi.',true); }
+  say($('msgD'),'Alhamdulillah, pendaftaran tercatat. Silakan tunggu info lanjutan dari panitia.');
+  ['nama','alamat','hp'].forEach(i=>$(i).value='');
+  setTimeout(()=>{$('kirim').disabled=false},3000);
+};
+
+$('masuk').onclick = async () => {
+  $('masuk').disabled = true;
+  const { error } = await sb.auth.signInWithPassword({ email:$('em').value.trim(), password:$('pw').value });
+  $('masuk').disabled = false;
+  if(error) return say($('msgL'),'Email atau password salah.',true);
+  $('pw').value=''; route();
+};
+$('keluar').onclick = async () => { await sb.auth.signOut(); location.hash=''; route(); };
+
+const pct = n => Math.max(0,Math.min(100,Math.round(n/TARGET*100)));
+const rp = n => 'Rp ' + Number(n).toLocaleString('id-ID');
+let tab = [], cur = null;
+const saldo = id => tab.filter(t => t.peserta_id === id).reduce((a,t) => a + (t.jenis === 'tarik' ? -1 : 1) * Number(t.jumlah), 0);
+async function muat(){
+  const [p,t] = await Promise.all([
+    sb.from('peserta').select('*').order('created_at'),
+    sb.from('tabungan').select('*').order('tanggal').order('id')]);
+  if(p.error) return say($('msgA'),'Gagal memuat data.',true);
+  data = p.data; tab = t.error ? [] : t.data;
+  if(t.error) say($('msgA'),'Tabel tabungan belum dibuat di Supabase.',true); else $('msgA').textContent='';
+  tampil(); if(cur) bukaTab(cur);
+}
+function sel(txt,fn,cls){
+  const b = document.createElement('button'); b.textContent = txt; b.className = cls || 'sec';
+  b.style.cssText = 'margin:0 4px 0 0;width:auto;padding:5px 11px;font-size:13px'; b.onclick = fn; return b;
+}
+function tampil(){
+  const q = $('cari').value.toLowerCase(), tb = $('rows'); tb.textContent='';
+  data.forEach((r,i)=>{
+    if(q && !(r.nama+r.alamat+r.hp).toLowerCase().includes(q)) return;
+    const tr = document.createElement('tr');
+    [i+1,r.nama,r.alamat,r.hp,r.tanggal_daftar,rp(saldo(r.id))+' ('+pct(saldo(r.id))+'%)'].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td);});
+    const td = document.createElement('td');
+    td.appendChild(sel('Tabungan',()=>{bukaTab(r.id);$('tabCard').scrollIntoView({behavior:'smooth'});},'pri'));
+    td.appendChild(sel('Hapus',async()=>{
+      if(!confirm('Hapus '+r.nama+' beserta tabungannya?')) return;
+      await sb.from('peserta').delete().eq('id',r.id); if(cur===r.id) tutupTab(); muat();}));
+    tr.appendChild(td); tb.appendChild(tr);
+  });
+  const tot = data.reduce((a,r)=>a+saldo(r.id),0);
+  $('total').textContent = data.length+' pendaftar dari '+KAPASITAS+' seat · total tabungan '+rp(tot)+' · '+data.filter(r=>saldo(r.id)>=TARGET).length+' lunas';
+}
+function bukaTab(id){
+  const r = data.find(x=>x.id===id); if(!r) return tutupTab();
+  cur = id; $('tabCard').hidden = false; $('tNama').textContent = r.nama;
+  const sd = saldo(id);
+  $('tSaldo').textContent = 'Saldo '+rp(sd)+' dari '+rp(TARGET)+' ('+pct(sd)+'%)'+(sd>=TARGET?' · Lunas':' · kurang '+rp(TARGET-sd));
+  $('tFill').style.width = pct(sd)+'%';
+  if(!$('tTgl').value) $('tTgl').value = new Date().toISOString().slice(0,10);
+  const tb = $('tRows'); tb.textContent='';
+  tab.filter(t=>t.peserta_id===id).slice().reverse().forEach(t=>{
+    const tr = document.createElement('tr');
+    [t.tanggal,t.jenis==='tarik'?'Tarik':'Setor',rp(t.jumlah),t.catatan||''].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td);});
+    const td = document.createElement('td');
+    td.appendChild(sel('Hapus',async()=>{ if(!confirm('Hapus catatan ini?')) return; await sb.from('tabungan').delete().eq('id',t.id); muat(); }));
+    tr.appendChild(td); tb.appendChild(tr);
+  });
+}
+function tutupTab(){ cur = null; $('tabCard').hidden = true; }
+$('tTutup').onclick = tutupTab;
+$('tSimpan').onclick = async () => {
+  const jumlah = parseInt($('tJml').value,10), jenis = $('tJenis').value;
+  if(!jumlah || jumlah <= 0) return say($('msgT'),'Jumlah harus lebih dari 0.',true);
+  if(jenis==='tarik' && jumlah > saldo(cur)) return say($('msgT'),'Penarikan melebihi saldo.',true);
+  $('tSimpan').disabled = true;
+  const { error } = await sb.from('tabungan').insert({ peserta_id:cur, jenis, jumlah, tanggal:$('tTgl').value, catatan:$('tCat').value.trim()||null });
+  $('tSimpan').disabled = false;
+  if(error) return say($('msgT'),'Gagal menyimpan.',true);
+  $('tJml').value=''; $('tCat').value=''; say($('msgT'),'Tersimpan.'); muat();
+};
+$('cari').oninput = tampil;
+$('csv').onclick = () => {
+  const esc = v => '"'+String(v).replace(/"/g,'""')+'"';
+  const csv = ['No,Nama,Alamat,No. HP,Tanggal Daftar,Saldo Tabungan,Kekurangan'].concat(data.map((r,i)=>[i+1,r.nama,r.alamat,r.hp,r.tanggal_daftar,saldo(r.id),Math.max(0,TARGET-saldo(r.id))].map(esc).join(','))).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));
+  a.download = 'peserta-ziarah-pamijahan.csv'; a.click();
+};
+route();
+</script>
+</body>
+</html>
